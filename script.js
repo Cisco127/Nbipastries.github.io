@@ -123,7 +123,18 @@ footer {
     }
     to {
         opacity: 1;
-    }
+    }document.getElementById('contact-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting the default way
+
+    emailjs.sendForm('service_9pzhyrt', 'service_9pzhyrt', this)
+      .then(function(response) {
+          console.log('SUCCESS!', response.status, response.text);
+          alert('Email sent successfully!');
+      }, function(error) {
+          console.log('FAILED...', error);
+          alert('Failed to send email. Please try again.');
+      });
+});
 }
 
 section {
