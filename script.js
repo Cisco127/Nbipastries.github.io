@@ -133,6 +133,59 @@ footer {
       }, function(error) {
           console.log('FAILED...', error);
           alert('Failed to send email. Please try again.');
+          document.addEventListener('DOMContentLoaded', () => {
+    const orderButtons = document.querySelectorAll('.order-btn');
+    const orderForm = document.getElementById('order-form');
+    const orderFormElement = document.getElementById('orderForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const addressInput = document.getElementById('address');
+    const itemIdInput = document.getElementById('item-id');
+    const itemNameInput = document.getElementById('item-name');
+
+    // Show the order form when "Order Now" is clicked
+    orderButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const menuItem = e.target.closest('.menu-item');
+            const itemId = menuItem.dataset.id;
+            const itemName = menuItem.querySelector('h3').textContent;
+
+            itemIdInput.value = itemId;
+            itemNameInput.value = itemName;
+
+            orderForm.classList.remove('hidden');
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    });
+
+    // Handle form submission
+    orderFormElement.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Collect order data
+        const orderData = {
+            name: nameInput.value,
+            email: emailInput.value,
+            address: addressInput.value,
+            itemName: itemNameInput.value
+        };
+
+        // Use EmailJS to send the email
+        emailjs.send('<span style="color: red;">service_9pzhyrt/span>', '<span style="color: red;">template_9z96le8</span>', {
+            customer_name: orderData.name,
+            customer_email: orderData.email,
+            customer_address: orderData.address,
+            ordered_item: orderData.itemName
+        }).then(() => {
+            alert('Order placed successfully! You will receive a confirmation email shortly.');
+            orderFormElement.reset();
+            orderForm.classList.add('hidden');
+        }).catch((error) => {
+            console.error('Failed to send order:', error);
+            alert('Failed to place order. Please try again later.');
+        });
+    });
+});
       });
 });
 }
