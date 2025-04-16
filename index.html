@@ -6,11 +6,10 @@
     <title>Food Ordering - Nbipastries</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2.4.1/dist/email.min.js"></script>
-    <script defer src="app.js"></script>
 </head>
 <body>
     <header>
-        <h1>Welcome to <span style="color: red;">Nairobipastries</span></h1> <!-- Customize your business name -->
+        <h1>Welcome to <span style="color: red;">Nairobipastries</span></h1>
         <p>Delicious pastries delivered to your doorstep from the comfort of your home!</p>
     </header>
     <main>
@@ -18,22 +17,19 @@
             <h2>Our Menu</h2>
             <!-- Menu Item 1 -->
             <div class="menu-item" data-id="1">
-                <h3><span style="color: red;">Vanilla cake</span></h3> <!-- Customize item name -->
-                <p>Rich and creamy vanilla cake .</p>
-                <p class="price"><span style="color: red;">Ksh 1000 per kg</span></p> <!-- Customize price -->
+                <h3><span style="color: red;">Vanilla cake</span></h3>
+                <p>Rich and creamy vanilla cake.</p>
+                <p class="price"><span style="color: red;">Ksh 1000 per kg</span></p>
                 <button class="order-btn">Order Now</button>
             </div>
 
             <!-- Menu Item 2 -->
             <div class="menu-item" data-id="2">
-                <h3><span style="color: red;">Sponge cake</span></h3> <!-- Customize item name -->
+                <h3><span style="color: red;">Sponge cake</span></h3>
                 <p>Classic sponge cake with flaky crust.</p>
-                <p class="price"><span style="color: red;">Ksh 1500 per kg</span></p> <!-- Customize price -->
+                <p class="price"><span style="color: red;">Ksh 1500 per kg</span></p>
                 <button class="order-btn">Order Now</button>
             </div>
-
-            <!-- Add more menu items below -->
-            <p style="color: red;">Add your customized menu items here</p> <!-- Reminder for customization -->
         </section>
 
         <section id="order-form" class="hidden">
@@ -54,9 +50,55 @@
             </form>
         </section>
     </main>
+
     <script>
         // Initialize EmailJS
-        emailjs.init('<span style="color: red;">1T5ETlDhKj0q2SduZ</span>'); // Replace with your EmailJS Public Key
+        emailjs.init(1T5ETlDhKj0q2SduZ); // Replace with your EmailJS Public Key
+
+        // Handle "Order Now" button click
+        document.querySelectorAll('.order-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const menuItem = e.target.closest('.menu-item');
+                const itemId = menuItem.dataset.id;
+                const itemName = menuItem.querySelector('h3').textContent;
+
+                // Populate the order form with item details
+                document.getElementById('item-id').value = itemId;
+                document.getElementById('item-name').value = itemName;
+
+                // Display the order form
+                document.getElementById('order-form').classList.remove('hidden');
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('orderForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Collect form data
+            const orderData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                itemName: document.getElementById('item-name').value
+            };
+
+            // Send email using EmailJS
+            emailjs.send('service_9pzhyrt', 'template_9z96le8', {
+                customer_name: orderData.name,
+                customer_email: orderData.email,
+                customer_address: orderData.address,
+                ordered_item: orderData.itemName
+            }).then(() => {
+                alert('Order placed successfully! You will receive a confirmation email shortly.');
+                document.getElementById('orderForm').reset();
+                document.getElementById('order-form').classList.add('hidden');
+            }).catch((error) => {
+                console.error('Failed to send order:', error);
+                alert('Failed to place order. Please try again later.');
+            });
+        });
     </script>
 </body>
-</html>
+</html>    
